@@ -6,19 +6,18 @@
 
 Name:      arm-trusted-firmware
 Version:   1.3
-Release:   0.1%{?candidate:.%{candidate}}%{?dist}
+Release:   2%{?candidate:.%{candidate}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
 Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+# https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
+Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
 
 BuildRequires:  dtc
-BuildRequires:  openssl-devel
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
 BuildRequires:  gcc
 
 %description
@@ -44,6 +43,8 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %prep
 %setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
 
+tar xf %{SOURCE1}
+
 %build
 
 %ifarch aarch64
@@ -52,6 +53,15 @@ do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
+
+# Build AllWinner branch
+pushd arm-trusted-firmware-AW
+for soc in sun50iw1p1
+do
+# At the moment we're only making the secure firmware (bl31)
+make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+done
+popd
 %endif
 
 
@@ -69,6 +79,20 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
   fi
  done
 done
+
+# Install AllWinner branch
+pushd arm-trusted-firmware-AW
+for soc in sun50iw1p1
+do
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+ for file in bl31.bin
+ do
+  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
+    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+  fi
+ done
+done
+popd
 %endif
 
 %ifarch aarch64
@@ -78,5 +102,8 @@ done
 %endif
 
 %changelog
+* Tue Apr 25 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.3-2
+- Add support for AllWinner SoCs
+
 * Mon Apr 24 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.3-1
 - Initial package
