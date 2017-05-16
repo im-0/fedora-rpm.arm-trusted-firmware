@@ -48,11 +48,11 @@ tar xf %{SOURCE1}
 %build
 
 %ifarch aarch64
-for soc in juno rk3368 rk3399
-do
-# At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
-done
+#for soc in juno rk3368 rk3399
+#do
+## At the moment we're only making the secure firmware (bl31)
+#make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+#done
 
 # Build AllWinner branch
 pushd arm-trusted-firmware-AW
@@ -69,16 +69,16 @@ popd
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %ifarch aarch64
-for soc in juno rk3368 rk3399
-do
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
- for file in bl31.bin
- do
-  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
-  fi
- done
-done
+#for soc in juno rk3368 rk3399
+#do
+#mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+# for file in bl31.bin
+# do
+#  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
+#    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+#  fi
+# done
+#done
 
 # Install AllWinner branch
 pushd arm-trusted-firmware-AW
