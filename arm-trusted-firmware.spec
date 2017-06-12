@@ -1,16 +1,19 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
 #global candidate rc2
+# git archive --format=tar --prefix=arm-trusted-firmware-1.3/ f9a050e | xz > arm-trusted-firmware-1.3-f9a050e.tar.xz
+%global githash f9a050e
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:      arm-trusted-firmware
 Version:   1.3
-Release:   2%{?candidate:.%{candidate}}%{?dist}
+Release:   3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
-Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+# Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+Source0:   %{name}-%{version}-%{githash}.tar.xz
 # https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
 Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
 
@@ -19,6 +22,8 @@ ExclusiveArch: aarch64
 
 BuildRequires:  dtc
 BuildRequires:  gcc
+# This is needed for rk3399 which while aarch64 has an onboard Cortex-M0 base PMU
+BuildRequires:  gcc-arm-linux-gnu
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -43,16 +48,18 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %prep
 %setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
 
+# Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
+sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
 tar xf %{SOURCE1}
 
 %build
 
 %ifarch aarch64
-#for soc in juno rk3368 rk3399
-#do
-## At the moment we're only making the secure firmware (bl31)
-#make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
-#done
+for soc in juno rk3399 rk3368 rk3328 hikey
+do
+# At the moment we're only making the secure firmware (bl31)
+make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+done
 
 # Build AllWinner branch
 pushd arm-trusted-firmware-AW
@@ -69,16 +76,16 @@ popd
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %ifarch aarch64
-#for soc in juno rk3368 rk3399
-#do
-#mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
-# for file in bl31.bin
-# do
-#  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-#    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
-#  fi
-# done
-#done
+for soc in juno rk3399 rk3368 rk3328 hikey
+do
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+ for file in bl31.bin
+ do
+  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
+    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+  fi
+ done
+done
 
 # Install AllWinner branch
 pushd arm-trusted-firmware-AW
@@ -102,6 +109,10 @@ popd
 %endif
 
 %changelog
+* Thu Jun  8 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.3-3.f9a050e
+- Move to upstream git snapshot
+- Build new hikey and rk3328
+
 * Tue Apr 25 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.3-2
 - Add support for AllWinner SoCs
 

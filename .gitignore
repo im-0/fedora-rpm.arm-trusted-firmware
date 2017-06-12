@@ -1,2 +1,3 @@
-/v1.3.tar.gz
-/arm-trusted-firmware-AW-aa75c8d.tar.gz
+/v1*.tar.gz
+/arm-trusted-firmware-*.tar.gz
+/arm-trusted-firmware-*.tar.xz
