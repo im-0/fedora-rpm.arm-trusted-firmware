@@ -1,19 +1,20 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
-#global candidate rc2
-# git archive --format=tar --prefix=arm-trusted-firmware-1.3/ f9a050e | xz > arm-trusted-firmware-1.3-f9a050e.tar.xz
-%global githash f9a050e
+%global candidate rc0
+# git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
+#global githash 38fe380
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:      arm-trusted-firmware
-Version:   1.3
-Release:   3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Version:   1.4
+Release:   0.1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
-# Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
-Source0:   %{name}-%{version}-%{githash}.tar.xz
+
+Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}-rc0.tar.gz
+# Source0:   %{name}-%{version}-%{githash}.tar.xz
 # https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
 Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
 
@@ -55,7 +56,7 @@ tar xf %{SOURCE1}
 %build
 
 %ifarch aarch64
-for soc in juno rk3399 rk3368 rk3328 hikey
+for soc in juno rk3399 rk3368 rk3328 hikey hikey960
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -76,7 +77,7 @@ popd
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %ifarch aarch64
-for soc in juno rk3399 rk3368 rk3328 hikey
+for soc in juno rk3399 rk3368 rk3328 hikey hikey960
 do
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
@@ -109,6 +110,10 @@ popd
 %endif
 
 %changelog
+* Fri Jun 30 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.4-0.1-rc0
+- New 1.4 rc0 release
+- Build hikey960
+
 * Thu Jun  8 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.3-3.f9a050e
 - Move to upstream git snapshot
 - Build new hikey and rk3328
