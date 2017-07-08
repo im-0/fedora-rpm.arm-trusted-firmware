@@ -1,5 +1,5 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
-%global candidate rc0
+#global candidate rc0
 # git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
 #global githash 38fe380
 
@@ -8,12 +8,12 @@
 
 Name:      arm-trusted-firmware
 Version:   1.4
-Release:   0.1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
 
-Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}-rc0.tar.gz
+Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
 # Source0:   %{name}-%{version}-%{githash}.tar.xz
 # https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
 Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
@@ -110,6 +110,9 @@ popd
 %endif
 
 %changelog
+* Sat Jul  8 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.0-1
+- New 1.4 release
+
 * Fri Jun 30 2017 Peter Robinson <pbrobinson@fedoraproject.org> 1.4-0.1-rc0
 - New 1.4 rc0 release
 - Build hikey960
