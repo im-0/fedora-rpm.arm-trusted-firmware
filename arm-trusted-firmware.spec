@@ -105,7 +105,8 @@ popd
 
 %ifarch aarch64
 %files -n arm-trusted-firmware-armv8
-%license license.md
+%license license.rst
+%doc readme.rst
 %{_datadir}/%{name}
 %endif
 
