@@ -8,7 +8,7 @@
 
 Name:      arm-trusted-firmware
 Version:   1.4
-Release:   3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   4%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -111,6 +111,9 @@ popd
 %endif
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
