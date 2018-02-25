@@ -1,0 +1,83 @@
+From 28db3e96efd3e172a2973962130dca952c9f21cd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+Date: Sat, 17 Feb 2018 06:02:32 +0100
+Subject: [PATCH 4/9] tegra: Fix mmap_region_t struct mismatch
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Commit fdb1964c34968921379d3592e7ac6e9a685dbab1 ("xlat: Introduce
+MAP_REGION2() macro") added a granularity field to mmap_region_t.
+
+Tegra platforms were using the v2 xlat_tables implementation in
+common/tegra_common.mk, but v1 xlat_tables.h headers in soc/*/plat_setup.c
+where arrays are being defined. This caused the next physical address to
+be read as granularity, causing EINVAL error and triggering an assert.
+
+Consistently use xlat_tables_v2.h header to avoid this.
+
+Fixes ARM-software/tf-issues#548.
+
+Signed-off-by: Andreas Färber <afaerber@suse.de>
+---
+ plat/nvidia/tegra/include/tegra_private.h | 2 +-
+ plat/nvidia/tegra/soc/t132/plat_setup.c   | 2 +-
+ plat/nvidia/tegra/soc/t186/plat_setup.c   | 2 +-
+ plat/nvidia/tegra/soc/t210/plat_setup.c   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/plat/nvidia/tegra/include/tegra_private.h b/plat/nvidia/tegra/include/tegra_private.h
+index ec7a277c..7a064556 100644
+--- a/plat/nvidia/tegra/include/tegra_private.h
++++ b/plat/nvidia/tegra/include/tegra_private.h
+@@ -10,7 +10,7 @@
+ #include <arch.h>
+ #include <platform_def.h>
+ #include <psci.h>
+-#include <xlat_tables.h>
++#include <xlat_tables_v2.h>
+ 
+ /*******************************************************************************
+  * Tegra DRAM memory base address
+diff --git a/plat/nvidia/tegra/soc/t132/plat_setup.c b/plat/nvidia/tegra/soc/t132/plat_setup.c
+index 24199654..4cbb3cc8 100644
+--- a/plat/nvidia/tegra/soc/t132/plat_setup.c
++++ b/plat/nvidia/tegra/soc/t132/plat_setup.c
+@@ -8,7 +8,7 @@
+ #include <bl_common.h>
+ #include <tegra_def.h>
+ #include <tegra_private.h>
+-#include <xlat_tables.h>
++#include <xlat_tables_v2.h>
+ 
+ /*******************************************************************************
+  * The Tegra power domain tree has a single system level power domain i.e. a
+diff --git a/plat/nvidia/tegra/soc/t186/plat_setup.c b/plat/nvidia/tegra/soc/t186/plat_setup.c
+index ba245790..fad6a59e 100644
+--- a/plat/nvidia/tegra/soc/t186/plat_setup.c
++++ b/plat/nvidia/tegra/soc/t186/plat_setup.c
+@@ -20,7 +20,7 @@
+ #include <tegra_def.h>
+ #include <tegra_platform.h>
+ #include <tegra_private.h>
+-#include <xlat_tables.h>
++#include <xlat_tables_v2.h>
+ 
+ DEFINE_RENAME_SYSREG_RW_FUNCS(l2ctlr_el1, CORTEX_A57_L2CTLR_EL1)
+ extern uint64_t tegra_enable_l2_ecc_parity_prot;
+diff --git a/plat/nvidia/tegra/soc/t210/plat_setup.c b/plat/nvidia/tegra/soc/t210/plat_setup.c
+index b058bed4..c3fc7b4a 100644
+--- a/plat/nvidia/tegra/soc/t210/plat_setup.c
++++ b/plat/nvidia/tegra/soc/t210/plat_setup.c
+@@ -9,7 +9,7 @@
+ #include <console.h>
+ #include <tegra_def.h>
+ #include <tegra_private.h>
+-#include <xlat_tables.h>
++#include <xlat_tables_v2.h>
+ 
+ /*******************************************************************************
+  * The Tegra power domain tree has a single system level power domain i.e. a
+-- 
+2.14.3
+

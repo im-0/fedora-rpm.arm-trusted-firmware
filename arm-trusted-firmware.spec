@@ -8,7 +8,7 @@
 
 Name:      arm-trusted-firmware
 Version:   1.4
-Release:   4%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   5%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -17,6 +17,10 @@ Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{versi
 # Source0:   %{name}-%{version}-%{githash}.tar.xz
 # https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
 Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
+
+Patch0: psci_common-Resolve-GCC-static-analysis-false-positi.patch
+Patch2: tegra-Fix-mmap_region_t-struct-mismatch.patch
+Patch1: zynqmp-Remove-duplicate-const-declaration.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -48,6 +52,9 @@ such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
 %setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
+%patch0 -p1 -b .psci
+%patch1 -p1 -b .tegra
+%patch2 -p1 -b .zynq
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -56,7 +63,7 @@ tar xf %{SOURCE1}
 %build
 
 %ifarch aarch64
-for soc in juno rk3399 rk3368 rk3328 hikey hikey960
+for soc in juno rk3399 rk3368 rk3328 hikey hikey960 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -77,10 +84,23 @@ popd
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %ifarch aarch64
-for soc in juno rk3399 rk3368 rk3328 hikey hikey960
+# Most platforms want bl31.bin
+for soc in juno hikey hikey960 zynqmp
 do
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
+ do
+  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
+    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+  fi
+ done
+done
+
+# Rockchips wants the bl31.elf, plus rk3399 wants power management co-processor bits
+for soc in rk3399 rk3368 rk3328
+do
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+ for file in bl31/bl31.elf m0/rk3399m0.bin m0/rk3399m0.elf
  do
   if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
     install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
@@ -111,6 +131,10 @@ popd
 %endif
 
 %changelog
+* Sun Feb 25 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.4-5
+- Updates for Rockchips 3300 series of SoCs
+- Build zynqmp
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
