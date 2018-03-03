@@ -1,5 +1,5 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
-#global candidate rc0
+%global candidate rc0
 # git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
 #global githash 38fe380
 
@@ -7,20 +7,16 @@
 %global debug_package %{nil}
 
 Name:      arm-trusted-firmware
-Version:   1.4
-Release:   5%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Version:   1.5
+Release:   0.1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
 
-Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 # Source0:   %{name}-%{version}-%{githash}.tar.xz
 # https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
 Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
-
-Patch0: psci_common-Resolve-GCC-static-analysis-false-positi.patch
-Patch2: tegra-Fix-mmap_region_t-struct-mismatch.patch
-Patch1: zynqmp-Remove-duplicate-const-declaration.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -52,9 +48,6 @@ such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
 %setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
-%patch0 -p1 -b .psci
-%patch1 -p1 -b .tegra
-%patch2 -p1 -b .zynq
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -131,8 +124,12 @@ popd
 %endif
 
 %changelog
+* Sat Mar  3 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.1-rc0
+- New 1.5 rc0 release
+- Aarch64 fixes for Spectre and Meltdown (CVE-2017-5715) rhbz #1532143
+
 * Sun Feb 25 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.4-5
-- Updates for Rockchips 3300 series of SoCs
+- Updates for Rockchips 33xx series of SoCs
 - Build zynqmp
 
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-4
