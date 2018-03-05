@@ -1,5 +1,5 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
-%global candidate rc0
+%global candidate rc1
 # git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
 #global githash 38fe380
 
@@ -8,7 +8,7 @@
 
 Name:      arm-trusted-firmware
 Version:   1.5
-Release:   0.1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   0.2%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -124,6 +124,9 @@ popd
 %endif
 
 %changelog
+* Mon Mar  5 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.2-rc1
+- New 1.5 rc1 release
+
 * Sat Mar  3 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.1-rc0
 - New 1.5 rc0 release
 - Aarch64 fixes for Spectre and Meltdown (CVE-2017-5715) rhbz #1532143
