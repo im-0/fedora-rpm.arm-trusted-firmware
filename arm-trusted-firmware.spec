@@ -1,5 +1,5 @@
 # Main version is relevant but initially we'll likely be pulling in snapshots
-%global candidate rc2
+%global candidate rc3
 # git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
 #global githash 38fe380
 
@@ -8,7 +8,7 @@
 
 Name:      arm-trusted-firmware
 Version:   1.5
-Release:   0.3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   0.4%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -124,6 +124,9 @@ popd
 %endif
 
 %changelog
+* Sun Mar 18 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.4-rc3
+- New 1.5 rc3 release
+
 * Fri Mar  9 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.3-rc2
 - New 1.5 rc2 release
 
