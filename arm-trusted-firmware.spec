@@ -124,7 +124,7 @@ popd
 %endif
 
 %changelog
-* Fri Mar 23 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5.0-1
+* Fri Mar 23 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-1
 - New 1.5 GA release
 
 * Sun Mar 18 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-0.4-rc3
