@@ -2,21 +2,23 @@
 #global candidate rc3
 # git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
 #global githash 38fe380
+# AllWinner command
+# https://github.com/apritzel/arm-trusted-firmware/tree/allwinner branch allwinner
+# git archive --format=tar --prefix=arm-trusted-firmware-AW-%{awtag}/ v%{awtag} | xz > arm-trusted-firmware-AW-%{awtag}.tar.xz
+%global awtag 1.0-aw-6
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:      arm-trusted-firmware
 Version:   1.5
-Release:   1%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   2%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
 
 Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-# Source0:   %{name}-%{version}-%{githash}.tar.xz
-# https://github.com/apritzel/arm-trusted-firmware/tree/allwinner
-Source1:   arm-trusted-firmware-AW-aa75c8d.tar.gz
+Source1:   arm-trusted-firmware-AW-%{awtag}.tar.xz
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -63,7 +65,7 @@ make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
 
 # Build AllWinner branch
-pushd arm-trusted-firmware-AW
+pushd arm-trusted-firmware-AW-%{awtag}
 for soc in sun50iw1p1
 do
 # At the moment we're only making the secure firmware (bl31)
@@ -102,7 +104,7 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
 done
 
 # Install AllWinner branch
-pushd arm-trusted-firmware-AW
+pushd arm-trusted-firmware-AW-%{awtag}
 for soc in sun50iw1p1
 do
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
@@ -124,6 +126,9 @@ popd
 %endif
 
 %changelog
+* Tue Apr 24 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-2
+- Move AllWinner ATF to tagged releases. Update to 1.0-aw-6
+
 * Fri Mar 23 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-1
 - New 1.5 GA release
 
