@@ -12,7 +12,7 @@
 
 Name:      arm-trusted-firmware
 Version:   1.5
-Release:   2%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
+Release:   3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
 Summary:   ARM Trusted Firmware
 License:   BSD
 URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -126,6 +126,9 @@ popd
 %endif
 
 %changelog
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue Apr 24 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-2
 - Move AllWinner ATF to tagged releases. Update to 1.0-aw-6
 
