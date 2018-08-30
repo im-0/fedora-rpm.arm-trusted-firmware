@@ -1,32 +1,27 @@
-# Main version is relevant but initially we'll likely be pulling in snapshots
 #global candidate rc3
-# git archive --format=tar --prefix=arm-trusted-firmware-1.3/ 38fe380 | xz > arm-trusted-firmware-1.3-38fe380.tar.xz
-#global githash 38fe380
-# AllWinner command
-# https://github.com/apritzel/arm-trusted-firmware/tree/allwinner branch allwinner
-# git archive --format=tar --prefix=arm-trusted-firmware-AW-%{awtag}/ v%{awtag} | xz > arm-trusted-firmware-AW-%{awtag}.tar.xz
-%global awtag 1.0-aw-6
+# ./make-git-snapshot.sh
+%global snapshot 20180830
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
-Name:      arm-trusted-firmware
-Version:   1.5
-Release:   3%{?candidate:.%{candidate}}%{?githash:.%{githash}}%{?dist}
-Summary:   ARM Trusted Firmware
-License:   BSD
-URL:       https://github.com/ARM-software/arm-trusted-firmware/wiki
+Name:    arm-trusted-firmware
+Version: 1.5
+Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Summary: ARM Trusted Firmware
+License: BSD
+URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
-Source0:   https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-Source1:   arm-trusted-firmware-AW-%{awtag}.tar.xz
+# Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
+Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
 
-BuildRequires:  dtc
-BuildRequires:  gcc
+BuildRequires: dtc
+BuildRequires: gcc
 # This is needed for rk3399 which while aarch64 has an onboard Cortex-M0 base PMU
-BuildRequires:  gcc-arm-linux-gnu
+BuildRequires: gcc-arm-linux-gnu
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -49,44 +44,36 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-%setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
+#%setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
+%setup -q -n %{name}-%{snapshot}
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
-tar xf %{SOURCE1}
 
 %build
 
 %ifarch aarch64
-for soc in juno rk3399 rk3368 rk3328 hikey hikey960 zynqmp
+for soc in hikey hikey960 imx8qm imx8qx juno rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
-
-# Build AllWinner branch
-pushd arm-trusted-firmware-AW-%{awtag}
-for soc in sun50iw1p1
-do
-# At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
-done
-popd
 %endif
 
 
 %install
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
+
+mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
 # Most platforms want bl31.bin
-for soc in juno hikey hikey960 zynqmp
+for soc in hikey hikey960 imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
  do
   if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /%{buildroot}%{_datadir}/%{name}/$(echo $soc)/
   fi
  done
 done
@@ -94,28 +81,15 @@ done
 # Rockchips wants the bl31.elf, plus rk3399 wants power management co-processor bits
 for soc in rk3399 rk3368 rk3328
 do
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31/bl31.elf m0/rk3399m0.bin m0/rk3399m0.elf
  do
   if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
+    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /%{buildroot}%{_datadir}/%{name}/$(echo $soc)/
   fi
  done
 done
 
-# Install AllWinner branch
-pushd arm-trusted-firmware-AW-%{awtag}
-for soc in sun50iw1p1
-do
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
- for file in bl31.bin
- do
-  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /$RPM_BUILD_ROOT%{_datadir}/%{name}/$(echo $soc)/
-  fi
- done
-done
-popd
 %endif
 
 %ifarch aarch64
@@ -126,6 +100,11 @@ popd
 %endif
 
 %changelog
+* Thu Aug 30 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-4.20180830
+- Move to upstream snapshot
+- Move from AllWinner 1.0 fork to upstream support
+- Build ATF for imx8qm imx8qx rpi3 sun50i_a64 sun50i_h6
+
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
