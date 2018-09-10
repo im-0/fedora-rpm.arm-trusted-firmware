@@ -1,19 +1,19 @@
-#global candidate rc3
+%global candidate rc0
 # ./make-git-snapshot.sh
-%global snapshot 20180830
+#global snapshot 20180830
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 1.5
-Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 1.6
+Release: 0.1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
-# Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
+Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
+#Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -44,8 +44,8 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-#%setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
-%setup -q -n %{name}-%{snapshot}
+%setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
+#%setup -q -n %{name}-%{snapshot}
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -100,6 +100,9 @@ done
 %endif
 
 %changelog
+* Mon Sep 10 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.6-0.1-rc0
+- New 1.6 rc0 release
+
 * Thu Aug 30 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.5-4.20180830
 - Move to upstream snapshot
 - Move from AllWinner 1.0 fork to upstream support
