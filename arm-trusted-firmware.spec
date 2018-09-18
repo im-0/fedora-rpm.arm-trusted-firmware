@@ -1,4 +1,4 @@
-%global candidate rc0
+%global candidate rc1
 # ./make-git-snapshot.sh
 #global snapshot 20180830
 
@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 1.6
-Release: 0.1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 0.2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -100,6 +100,9 @@ done
 %endif
 
 %changelog
+* Tue Sep 18 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.6-0.2-rc1
+- New 1.6 rc1 release
+
 * Mon Sep 10 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.6-0.1-rc0
 - New 1.6 rc0 release
 
