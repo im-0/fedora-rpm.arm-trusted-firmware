@@ -6,7 +6,7 @@
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 1.6
+Version: 2.0
 Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
@@ -100,6 +100,9 @@ done
 %endif
 
 %changelog
+* Tue Dec  4 2018 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-1
+- New 2.0 GA release
+
 * Fri Sep 21 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.6-1
 - New 1.6 GA release
 

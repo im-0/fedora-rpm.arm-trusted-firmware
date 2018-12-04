@@ -1,3 +1,4 @@
 /v1*.tar.gz
 /arm-trusted-firmware-*.tar.gz
 /arm-trusted-firmware-*.tar.xz
+/v2.0.tar.gz
