@@ -1,19 +1,22 @@
 #global candidate rc1
 # ./make-git-snapshot.sh
-#global snapshot 20180830
+%global snapshot 20181204
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
 Version: 2.0
-Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
+%if 0%{?snapshot}
+Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
+%else
 Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-#Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
+%endif
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -44,8 +47,11 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
+%if 0%{?snapshot}
+%setup -q -n %{name}-%{snapshot}
+%else
 %setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
-#%setup -q -n %{name}-%{snapshot}
+%endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -53,7 +59,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %build
 
 %ifarch aarch64
-for soc in hikey hikey960 imx8qm imx8qx juno rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -100,6 +106,10 @@ done
 %endif
 
 %changelog
+* Tue Dec  4 2018 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-2.20181204
+- Upstream snapshot
+- Enable Marvell a3700, AMLogic gxbb
+
 * Tue Dec  4 2018 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-1
 - New 2.0 GA release
 
