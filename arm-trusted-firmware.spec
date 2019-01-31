@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.0
-Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 3%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -106,6 +106,9 @@ done
 %endif
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0-3.20181204
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Tue Dec  4 2018 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-2.20181204
 - Upstream snapshot
 - Enable Marvell a3700, AMLogic gxbb
