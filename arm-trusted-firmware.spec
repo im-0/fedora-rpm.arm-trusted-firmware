@@ -1,13 +1,13 @@
 #global candidate rc1
 # ./make-git-snapshot.sh
-%global snapshot 20181204
+%global snapshot 20190209
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
 Version: 2.0
-Release: 3%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -48,9 +48,9 @@ such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
 %if 0%{?snapshot}
-%setup -q -n %{name}-%{snapshot}
+%autosetup -n %{name}-%{snapshot}
 %else
-%setup -q -n %{name}-%{version}%{?candidate:-%{candidate}}
+%autosetup -n %{name}-%{version}%{?candidate:-%{candidate}}
 %endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
@@ -106,6 +106,9 @@ done
 %endif
 
 %changelog
+* Sat Feb  9 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-4.20190209
+- Upstream snapshot
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0-3.20181204
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
