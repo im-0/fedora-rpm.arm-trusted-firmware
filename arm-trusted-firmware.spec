@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.0
-Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 5%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -25,6 +25,13 @@ BuildRequires: dtc
 BuildRequires: gcc
 # This is needed for rk3399 which while aarch64 has an onboard Cortex-M0 base PMU
 BuildRequires: gcc-arm-linux-gnu
+
+# Added for .el7 rebuild, so newer binutils is used (PR 20364)
+%if 0%{?rhel} == 7
+BuildRequires: devtoolset-7-build
+BuildRequires: devtoolset-7-binutils
+BuildRequires: devtoolset-7-gcc
+%endif
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -57,6 +64,10 @@ such as u-boot. As such the binaries aren't of general interest to users.
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
+%if 0%{?rhel} == 7
+#Enabling DTS for .el7
+%{?enable_devtoolset7:%{enable_devtoolset7}}
+%endif
 
 %ifarch aarch64
 for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
@@ -106,6 +117,9 @@ done
 %endif
 
 %changelog
+* Sat Mar 16 2019 Pablo Greco <pablo@fliagreco.com.ar>  2.0-5.20190209
+- Support building in el7 with devtoolset-7
+
 * Sat Feb  9 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.0-4.20190209
 - Upstream snapshot
 
