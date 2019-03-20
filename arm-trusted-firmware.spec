@@ -1,13 +1,13 @@
-#global candidate rc1
+%global candidate rc0
 # ./make-git-snapshot.sh
-%global snapshot 20190209
+#global snapshot 20190209
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.0
-Release: 5%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 2.1
+Release: 0.1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Wed Mar 20 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.1-0.1-rc0
+- New 2.1 rc0 release
+
 * Sat Mar 16 2019 Pablo Greco <pablo@fliagreco.com.ar>  2.0-5.20190209
 - Support building in el7 with devtoolset-7
 
