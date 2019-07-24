@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.1
-Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Sun Mar 31 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.1-1
 - New 2.1 GA release
 
