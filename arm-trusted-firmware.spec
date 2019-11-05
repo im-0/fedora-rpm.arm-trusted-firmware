@@ -70,7 +70,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %endif
 
 %ifarch aarch64
-for soc in hikey hikey960 imx8m imx8qm imx8qx juno gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8mm imx8mq imx8qm imx8qx juno gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -84,7 +84,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
 # Most platforms want bl31.bin
-for soc in hikey hikey960 imx8m imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8mm imx8mq imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
