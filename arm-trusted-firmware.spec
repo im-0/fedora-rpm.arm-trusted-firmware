@@ -6,8 +6,8 @@
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.1
-Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 2.2
+Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -70,7 +70,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %endif
 
 %ifarch aarch64
-for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8m imx8qm imx8qx juno gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -84,7 +84,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
 # Most platforms want bl31.bin
-for soc in hikey hikey960 imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8m imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Tue Nov  5 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.2-1
+- New 2.2 GA release
+
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
