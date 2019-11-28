@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.2
-Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -17,6 +17,7 @@ Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 %else
 Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 %endif
+Patch0:   rockchip-fix-reboot.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -55,9 +56,9 @@ such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
 %if 0%{?snapshot}
-%autosetup -n %{name}-%{snapshot}
+%autosetup -n %{name}-%{snapshot} -p1
 %else
-%autosetup -n %{name}-%{version}%{?candidate:-%{candidate}}
+%autosetup -n %{name}-%{version}%{?candidate:-%{candidate}} -p1
 %endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
@@ -117,6 +118,9 @@ done
 %endif
 
 %changelog
+* Thu Nov 28 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.2-2
+- Add Rockchip reboot fix
+
 * Tue Nov  5 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.2-1
 - New 2.2 GA release
 
