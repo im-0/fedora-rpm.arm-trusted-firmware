@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.2
-Release: 3%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -118,6 +118,9 @@ done
 %endif
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Wed Dec  4 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.2-3
 - Minor build fixes and cleanup
 
