@@ -1,0 +1,53 @@
+From 118a67a9a3a810d37bca89aab28922769ca04a84 Mon Sep 17 00:00:00 2001
+From: Samuel Holland <samuel@sholland.org>
+Date: Wed, 4 Dec 2019 02:45:58 -0600
+Subject: [PATCH] imx: Fix multiple definition of ipc_handle
+
+This is not conforming C and does not compile with -fno-common.
+
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Change-Id: I6535954cc567d6efa06919069b91e3f50975b073
+---
+ plat/imx/common/include/sci/sci_ipc.h | 4 ++--
+ plat/imx/common/sci/ipc.c             | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/plat/imx/common/include/sci/sci_ipc.h b/plat/imx/common/include/sci/sci_ipc.h
+index 1167ea367d..39e9012bc4 100644
+--- a/plat/imx/common/include/sci/sci_ipc.h
++++ b/plat/imx/common/include/sci/sci_ipc.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015-2018, ARM Limited and Contributors. All rights reserved.
++ * Copyright (c) 2015-2019, ARM Limited and Contributors. All rights reserved.
+  *
+  * SPDX-License-Identifier: BSD-3-Clause
+  */
+@@ -62,6 +62,6 @@ void sc_ipc_read(sc_ipc_t ipc, void *data);
+  */
+ void sc_ipc_write(sc_ipc_t ipc, void *data);
+ 
+-sc_ipc_t ipc_handle;
++extern sc_ipc_t ipc_handle;
+ 
+ #endif /* SCI_IPC_H */
+diff --git a/plat/imx/common/sci/ipc.c b/plat/imx/common/sci/ipc.c
+index 6491ca575f..5769119254 100644
+--- a/plat/imx/common/sci/ipc.c
++++ b/plat/imx/common/sci/ipc.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015-2018, ARM Limited and Contributors. All rights reserved.
++ * Copyright (c) 2015-2019, ARM Limited and Contributors. All rights reserved.
+  *
+  * SPDX-License-Identifier: BSD-3-Clause
+  */
+@@ -13,6 +13,8 @@
+ #include <sci/sci_rpc.h>
+ #include "imx8_mu.h"
+ 
++sc_ipc_t ipc_handle;
++
+ DEFINE_BAKERY_LOCK(sc_ipc_bakery_lock);
+ #define sc_ipc_lock_init()	bakery_lock_init(&sc_ipc_bakery_lock)
+ #define sc_ipc_lock()		bakery_lock_get(&sc_ipc_bakery_lock)

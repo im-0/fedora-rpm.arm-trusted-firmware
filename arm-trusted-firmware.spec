@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.2
-Release: 5%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 6%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -18,6 +18,8 @@ Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 %endif
 Patch0:   rockchip-fix-reboot.patch
+Patch1:   atf-imx-missing-cdef-include.patch
+Patch2:   atf-imx-multiple-def-ipc_handle.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -71,7 +73,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %endif
 
 %ifarch aarch64
-for soc in gxbb hikey hikey960 imx8mm imx8mq juno rk3399 rk3368 rk3328 rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
+for soc in gxbb hikey hikey960 imx8mm imx8mq imx8qm imx8qx juno rk3399 rk3368 rk3328 rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -85,7 +87,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
 # Most platforms want bl31.bin
-for soc in gxbb hikey hikey960 imx8mm imx8mq juno rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
+for soc in gxbb hikey hikey960 imx8mm imx8mq imx8qm imx8qx juno rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
@@ -118,6 +120,9 @@ done
 %endif
 
 %changelog
+* Thu Mar 12 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 2.2-6
+- Re-enable imx8qm imx8qx
+
 * Thu Feb 27 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 2.2-5
 - Temporarily drop imx8q ATF
 
