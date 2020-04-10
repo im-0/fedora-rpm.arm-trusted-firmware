@@ -1,4 +1,4 @@
-#global candidate rc1
+%global candidate rc0
 # ./make-git-snapshot.sh
 #global snapshot 20190209
 
@@ -6,8 +6,8 @@
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.2
-Release: 6%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 2.3
+Release: 0.1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -17,9 +17,6 @@ Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 %else
 Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 %endif
-Patch0:   rockchip-fix-reboot.patch
-Patch1:   atf-imx-missing-cdef-include.patch
-Patch2:   atf-imx-multiple-def-ipc_handle.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -120,6 +117,9 @@ done
 %endif
 
 %changelog
+* Fri Apr 10 2020 Peter Robinson <pbrobinson@fedoraproject.org> 2.3-0.1-rc0
+- New 2.3 rc0 release
+
 * Thu Mar 12 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 2.2-6
 - Re-enable imx8qm imx8qx
 
