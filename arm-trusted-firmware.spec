@@ -1,4 +1,4 @@
-%global candidate rc0
+#global candidate rc0
 # ./make-git-snapshot.sh
 #global snapshot 20190209
 
@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.4
-Release: 0.1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Tue Nov 17 20:42:48 GMT 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 2.4-1
+- New 2.4 GA release
+
 * Fri Oct 30 17:48:26 GMT 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 2.4-0.1.rc0
 - New 2.4 RC0 release
 
