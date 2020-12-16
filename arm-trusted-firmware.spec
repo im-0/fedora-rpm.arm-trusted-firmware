@@ -31,6 +31,7 @@ BuildRequires: gcc-arm-linux-gnu
 BuildRequires: devtoolset-7-build
 BuildRequires: devtoolset-7-binutils
 BuildRequires: devtoolset-7-gcc
+BuildRequires: make
 %endif
 
 %description
