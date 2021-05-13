@@ -7,7 +7,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.4
-Release: 3%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Release: 4%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -17,6 +17,7 @@ Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
 %else
 Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 %endif
+Patch0:  0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -118,6 +119,9 @@ done
 %endif
 
 %changelog
+* Thu May 13 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.4-4
+- Fix Rockchip rk3399 memory placement for suspend
+
 * Mon Feb 01 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.4-3
 - Enable newer Amlogic devices
 
