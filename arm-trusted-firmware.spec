@@ -1,22 +1,17 @@
-#global candidate rc0
-# ./make-git-snapshot.sh
-#global snapshot 20190209
+%global candidate rc1
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.4
-Release: 3%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 2.5
+Release: 0.1%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
-%if 0%{?snapshot}
-Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
-%else
-Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-%endif
+Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
+Patch0:  0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -55,11 +50,7 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-%if 0%{?snapshot}
-%autosetup -n %{name}-%{snapshot} -p1
-%else
 %autosetup -n %{name}-%{version}%{?candidate:-%{candidate}} -p1
-%endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -71,7 +62,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %endif
 
 %ifarch aarch64
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3399 rk3368 rk3328 rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
+for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -118,6 +109,9 @@ done
 %endif
 
 %changelog
+* Thu May 13 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-0.1.rc1
+- New 2.5 RC1 release
+
 * Mon Feb 01 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.4-3
 - Enable newer Amlogic devices
 
