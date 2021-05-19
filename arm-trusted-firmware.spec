@@ -1,11 +1,11 @@
-%global candidate rc1
+#global candidate rc1
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
 Version: 2.5
-Release: 0.1%{?candidate:.%{candidate}}%{?dist}
+Release: 1%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -109,6 +109,9 @@ done
 %endif
 
 %changelog
+* Wed May 19 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-1
+- Update to 2.5
+
 * Thu May 13 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-0.1.rc1
 - New 2.5 RC1 release
 
