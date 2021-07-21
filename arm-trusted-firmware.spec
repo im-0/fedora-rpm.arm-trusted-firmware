@@ -5,7 +5,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.5
-Release: 1%{?candidate:.%{candidate}}%{?dist}
+Release: 2%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -109,6 +109,9 @@ done
 %endif
 
 %changelog
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Wed May 19 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-1
 - Update to 2.5
 
