@@ -5,13 +5,14 @@
 
 Name:    arm-trusted-firmware
 Version: 2.5
-Release: 2%{?candidate:.%{candidate}}%{?dist}
+Release: 3%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
 Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 Patch0:  0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
+Patch1:  rk3399-suspend-correct-LPDDR4-resume-sequence.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -109,6 +110,9 @@ done
 %endif
 
 %changelog
+* Tue Nov 02 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-3
+- Fix for rk3399 suspend/resume
+
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.5-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
