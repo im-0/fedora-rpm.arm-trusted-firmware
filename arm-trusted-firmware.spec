@@ -1,18 +1,16 @@
-#global candidate rc1
+%global candidate rc0
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.5
-Release: 3%{?candidate:.%{candidate}}%{?dist}
+Version: 2.6
+Release: 0.1%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
 Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-Patch0:  0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
-Patch1:  rk3399-suspend-correct-LPDDR4-resume-sequence.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -63,7 +61,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 %endif
 
 %ifarch aarch64
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
+for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -77,7 +75,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
 # Most platforms want bl31.bin
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rpi3 rpi4 sun50i_a64 sun50i_h6 zynqmp
+for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rpi3 rpi4 sun50i_a64 sun50i_h6
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
@@ -110,6 +108,9 @@ done
 %endif
 
 %changelog
+* Mon Nov 15 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-0.1.rc0
+- Update to 2.6.0 RC0
+
 * Tue Nov 02 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.5-3
 - Fix for rk3399 suspend/resume
 
