@@ -1,11 +1,11 @@
-%global candidate rc0
+%global candidate rc1
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
 Version: 2.6
-Release: 0.1%{?candidate:.%{candidate}}%{?dist}
+Release: 0.2%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -108,6 +108,9 @@ done
 %endif
 
 %changelog
+* Tue Nov 23 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-0.2.rc1
+- Update to 2.6 RC1
+
 * Mon Nov 15 2021 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-0.1.rc0
 - Update to 2.6.0 RC0
 
