@@ -11,6 +11,7 @@ License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
 Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
+Source1: aarch64-bl31
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -43,13 +44,17 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %prep
 %autosetup -n %{name}-%{version}%{?candidate:-%{candidate}} -p1
 
+cp %SOURCE1 .
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
 
+# Device firmwares don't currently support LTO
+%define _lto_cflags %{nil}
+
 %ifarch aarch64
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6 sun50i_h616
+for soc in $(cat %{_arch}-bl31)
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -62,8 +67,8 @@ done
 mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
-# Most platforms want bl31.bin
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rpi3 rpi4 sun50i_a64 sun50i_h6
+# At the moment we just support adding bl31.bin
+for soc in $(cat %{_arch}-bl31)
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
