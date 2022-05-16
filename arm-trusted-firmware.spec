@@ -5,7 +5,7 @@
 
 Name:    arm-trusted-firmware
 Version: 2.6
-Release: 2%{?candidate:.%{candidate}}%{?dist}
+Release: 3%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
@@ -19,14 +19,6 @@ BuildRequires: dtc
 BuildRequires: gcc
 # This is needed for rk3399 which while aarch64 has an onboard Cortex-M0 base PMU
 BuildRequires: gcc-arm-linux-gnu
-
-# Added for .el7 rebuild, so newer binutils is used (PR 20364)
-%if 0%{?rhel} == 7
-BuildRequires: devtoolset-7-build
-BuildRequires: devtoolset-7-binutils
-BuildRequires: devtoolset-7-gcc
-BuildRequires: make
-%endif
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -55,13 +47,9 @@ such as u-boot. As such the binaries aren't of general interest to users.
 sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
-%if 0%{?rhel} == 7
-#Enabling DTS for .el7
-%{?enable_devtoolset7:%{enable_devtoolset7}}
-%endif
 
 %ifarch aarch64
-for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6
+for soc in axg g12a gxbb gxl hikey hikey960 imx8mm imx8mq imx8qm imx8qx rk3328 rk3368 rk3399 rpi3 rpi4 sun50i_a64 sun50i_h6 sun50i_h616
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -108,6 +96,9 @@ done
 %endif
 
 %changelog
+* Mon May 16 2022 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-3
+- Enable Allwinner H616 support
+
 * Wed Jan 19 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
