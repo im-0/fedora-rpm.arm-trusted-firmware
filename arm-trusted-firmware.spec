@@ -50,8 +50,7 @@ sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefi
 
 %build
 
-# Device firmwares don't currently support LTO
-%define _lto_cflags %{nil}
+%undefine _auto_set_build_flags
 
 %ifarch aarch64
 for soc in $(cat %{_arch}-bl31)
