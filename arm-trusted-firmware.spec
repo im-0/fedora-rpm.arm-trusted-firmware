@@ -1,15 +1,14 @@
-#global candidate rc1
+%global candidate rc0
 
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.6
-Release: 3%{?candidate:.%{candidate}}%{?dist}
+Version: 2.7
+Release: 0.1%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
-
 Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 Source1: aarch64-bl31
 
@@ -100,6 +99,9 @@ done
 %endif
 
 %changelog
+* Wed May 25 2022 Peter Robinson <pbrobinson@fedoraproject.org> - 2.7-0.1.rc0
+- Update to 2.7rc0
+
 * Mon May 16 2022 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-3
 - Enable Allwinner H616 support
 
