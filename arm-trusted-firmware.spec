@@ -5,13 +5,15 @@
 
 Name:    arm-trusted-firmware
 Version: 2.6
-Release: 3%{?candidate:.%{candidate}}%{?dist}
+Release: 3.im0%{?candidate:.%{candidate}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
 
 Source0: https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
 Source1: aarch64-bl31
+
+Patch0: 0001-allwinner-Disable-secondary-CPU-to-fix-probing-AXP80.patch
 
 # At the moment we're only building on aarch64
 ExclusiveArch: aarch64
@@ -100,6 +102,9 @@ done
 %endif
 
 %changelog
+* Sun May 29 2022 Ivan Mironov <mironov.ivan@gmail.com> - 2.6-3.im0
+- Fix boot on Tanix TX6 (Allwinner H6 without AXP805)
+
 * Mon May 16 2022 Peter Robinson <pbrobinson@fedoraproject.org> - 2.6-3
 - Enable Allwinner H616 support
 

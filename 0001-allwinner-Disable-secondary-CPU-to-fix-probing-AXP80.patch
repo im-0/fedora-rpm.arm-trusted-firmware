@@ -1,0 +1,28 @@
+From 715dc2e3cc8e6e5f29532039766b8b1914ccef45 Mon Sep 17 00:00:00 2001
+From: Ivan Mironov <mironov.ivan@gmail.com>
+Date: Sun, 29 May 2022 11:43:01 +0500
+Subject: [PATCH] allwinner: Disable secondary CPU to fix probing AXP805 on RSB
+
+Fixes: ed267c92ad46 ("allwinner: Leave CPU power alone during BL31 setup")
+Signed-off-by: Ivan Mironov <mironov.ivan@gmail.com>
+---
+ plat/allwinner/common/sunxi_bl31_setup.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/plat/allwinner/common/sunxi_bl31_setup.c b/plat/allwinner/common/sunxi_bl31_setup.c
+index a32124a182a8..2862827f0bcd 100644
+--- a/plat/allwinner/common/sunxi_bl31_setup.c
++++ b/plat/allwinner/common/sunxi_bl31_setup.c
+@@ -102,6 +102,9 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 	bl33_image_ep_info.spsr = SPSR_64(MODE_EL2, MODE_SP_ELX,
+ 					  DISABLE_ALL_EXCEPTIONS);
+ 	SET_SECURITY_STATE(bl33_image_ep_info.h.attr, NON_SECURE);
++
++	/* Turn off all secondary CPUs */
++	sunxi_cpu_power_off_others();
+ }
+ 
+ void bl31_plat_arch_setup(void)
+-- 
+2.36.1
+
